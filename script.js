@@ -147,10 +147,43 @@ class AIImageGenerator {
         this.loadingMessage.textContent = 'Starting image generation...';
         
         try {
-            // Construct the URL for Pollinations.AI image generation
-            // Aspect ratio and style can be added to the prompt for better results
-            const fullPrompt = `${prompt}, ${this.currentStyle} style, aspect ratio ${this.currentAspectRatio}`;
-            const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}`;
+            let width, height;
+            switch (this.currentAspectRatio) {
+                case '1:1':
+                    width = 1024;
+                    height = 1024;
+                    break;
+                case '16:9':
+                    width = 1280;
+                    height = 720;
+                    break;
+                case '9:16':
+                    width = 720;
+                    height = 1280;
+                    break;
+                case '4:3':
+                    width = 1024;
+                    height = 768;
+                    break;
+                case '3:4':
+                    width = 768;
+                    height = 1024;
+                    break;
+                case '21:9':
+                    width = 1280;
+                    height = 548; // Approximately
+                    break;
+                case '9:21':
+                    width = 548; // Approximately
+                    height = 1280;
+                    break;
+                default:
+                    width = 1024;
+                    height = 1024;
+            }
+
+            const fullPrompt = `${prompt}, ${this.currentStyle} style`;
+            const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}?width=${width}&height=${height}`;
 
             // Fetch the image as a Blob
             const response = await fetch(imageUrl);
@@ -367,5 +400,8 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 });
+
+
+
 
 
