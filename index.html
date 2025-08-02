@@ -10,238 +10,246 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <h1 class="logo">
-                    <i class="fas fa-magic"></i>
-                    Nistha Free AI Image Generator
-                </h1>
-                <p class="dedication">In the loving memory of my late Daughter Nistha</p>
-                <p class="tagline">Create stunning images from text - 100% free, unlimited</p>
-            </div>
-        </header>
-
-        <!-- Ad Placement 1 (Top Banner ) -->
-        <div class="ad-container top-banner">
-            <a rel="sponsored noopener noreferrer" href="https://1.envato.market/c/1290050/847709/4662" target="_blank" id="847709">
-                <img src="//a.impactradius-go.com/display-ad/4662-847709" border="0" alt="" width="950" height="90"/>
-            </a>
-            <img height="0" width="0" src="https://1.envato.market/i/1290050/847709/4662" style="position:absolute;visibility:hidden;" border="0" />
-        </div>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Input Section -->
-            <section class="input-section">
-                <div class="input-container">
-                    <label for="prompt-input" class="input-label">
-                        <i class="fas fa-lightbulb"></i>
-                        Describe your image
-                    </label>
-                    <textarea 
-                        id="prompt-input" 
-                        class="prompt-input" 
-                        placeholder="A majestic mountain landscape at sunset with golden light reflecting on a crystal clear lake..."
-                        rows="4"
-                    ></textarea>
-                    
-                    <!-- Options Panel -->
-                    <div class="options-panel">
-                        <div class="option-group">
-                            <label class="option-label">Aspect Ratio</label>
-                            <div class="aspect-ratio-selector">
-                                <button class="aspect-btn active" data-ratio="1:1">
-                                    <div class="aspect-preview square"></div>
-                                    <span>1:1</span>
-                                </button>
-                                <button class="aspect-btn" data-ratio="16:9">
-                                    <div class="aspect-preview landscape"></div>
-                                    <span>16:9</span>
-                                </button>
-                                <button class="aspect-btn" data-ratio="9:16">
-                                    <div class="aspect-preview portrait"></div>
-                                    <span>9:16</span>
-                                </button>
-                                <button class="aspect-btn" data-ratio="4:3">
-                                    <div class="aspect-preview wide"></div>
-                                    <span>4:3</span>
-                                </button>
-                                <button class="aspect-btn" data-ratio="21:9">
-                                    <div class="aspect-preview ultrawide"></div>
-                                    <span>21:9</span>
-                                </button>
-                                <button class="aspect-btn" data-ratio="3:2">
-                                    <div class="aspect-preview classic"></div>
-                                    <span>3:2</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="option-group">
-                            <label class="option-label">Style</label>
-                            <select id="style-selector" class="style-selector">
-                                <option value="photorealistic">Photorealistic</option>
-                                <option value="artistic">Artistic</option>
-                                <option value="abstract">Abstract</option>
-                                <option value="fantasy">Fantasy</option>
-                                <option value="minimalist">Minimalist</option>
-                                <option value="vintage">Vintage</option>
-                                <option value="watercolor">Watercolor</option>
-                                <option value="oil painting">Oil Painting</option>
-                                <option value="anime">Anime</option>
-                                <option value="cyberpunk">Cyberpunk</option>
-                                <option value="cartoon">Cartoon</option>
-                                <option value="sci-fi">Sci-Fi</option>
-                            </select>
-                        </div>
-
-                        <div class="option-group">
-                            <label class="option-label">Model</label>
-                            <select id="model-selector" class="style-selector">
-                                <!-- Models will be dynamically loaded here -->
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Generate Button -->
-                    <button id="generate-btn" class="generate-btn">
-                        <i class="fas fa-magic"></i>
-                        <span class="btn-text">Generate Image</span>
-                        <div class="btn-loader hidden">
-                            <i class="fas fa-spinner fa-spin"></i>
-                            <span id="loading-message">Generating...</span>
-                        </div>
-                    </button>
-                </div>
-
-                <!-- Example Prompts -->
-                <div class="example-prompts">
-                    <h3>Need inspiration? Try these prompts:</h3>
-                    <div class="prompt-examples">
-                        <button class="example-btn" data-prompt="A futuristic city skyline at night with neon lights and flying cars">
-                            Futuristic cityscape
-                        </button>
-                        <button class="example-btn" data-prompt="A cozy cabin in a snowy forest with warm light glowing from the windows">
-                            Cozy winter cabin
-                        </button>
-                        <button class="example-btn" data-prompt="A majestic dragon soaring through clouds above ancient mountains">
-                            Majestic dragon
-                        </button>
-                        <button class="example-btn" data-prompt="A peaceful zen garden with cherry blossoms and a small pond">
-                            Zen garden
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Results Section -->
-            <section class="results-section">
-                <div class="results-container">
-                    <!-- Placeholder -->
-                    <div id="placeholder" class="placeholder">
-                        <div class="placeholder-content">
-                            <i class="fas fa-image"></i>
-                            <h3>Your AI-generated image will appear here</h3>
-                            <p>Enter a description above and click "Generate Image" to get started</p>
-                        </div>
-                    </div>
-
-                    <!-- Loading State -->
-                    <div id="loading-state" class="loading-state hidden">
-                        <div class="loading-animation">
-                            <div class="loading-spinner"></div>
-                            <h3>Creating your image...</h3>
-                            <p>This may take a few seconds</p>
-                            <div class="loading-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Generated Image -->
-                    <div id="image-result" class="image-result hidden">
-                        <div class="image-container">
-                            <img id="generated-image" src="" alt="Generated AI image" class="generated-image">
-                            <div class="image-overlay">
-                                <div class="image-actions">
-                                    <button id="download-btn" class="action-btn download-btn">
-                                        <i class="fas fa-download"></i>
-                                        Download
-                                    </button>
-                                    <button id="share-btn" class="action-btn share-btn">
-                                        <i class="fas fa-share"></i>
-                                        Share
-                                    </button>
-                                    <button id="regenerate-btn" class="action-btn regenerate-btn">
-                                        <i class="fas fa-redo"></i>
-                                        Regenerate
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="image-info">
-                            <p class="prompt-used">Prompt: <span id="used-prompt"></span></p>
-                        </div>
-                    </div>
-
-                    <!-- Error State -->
-                    <div id="error-state" class="error-state hidden">
-                        <div class="error-content">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <h3>Oops! Something went wrong</h3>
-                            <p id="error-message">Unable to generate image. Please try again.</p>
-                            <button id="retry-btn" class="retry-btn">
-                                <i class="fas fa-redo"></i>
-                                Try Again
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Ad Placement 2 (Middle Banner ) -->
-            <div class="ad-container middle-banner">
+    <div class="page-wrapper">
+        <!-- Left Sidebar with Vertical Banner -->
+        <aside class="left-sidebar">
+            <div class="vertical-banner">
                 <a rel="sponsored noopener noreferrer" href="https://1.envato.market/c/1290050/3070711/4662" target="_blank" id="3070711">
-                    <img src="//a.impactradius-go.com/display-ad/4662-3070711" border="0" alt="" width="300" height="600"/>
+                    <img src="//a.impactradius-go.com/display-ad/4662-3070711" border="0" alt="Envato Elements" width="300" height="600"/>
                 </a>
                 <img height="0" width="0" src="https://1.envato.market/i/1290050/3070711/4662" style="position:absolute;visibility:hidden;" border="0" />
             </div>
+        </aside>
 
-            <!-- Ad Placement 3 (Ideogram Image Link ) -->
-            <div class="ad-container ideogram-ad">
-                <a href="https://premiumhustlers.com/ideogithub" target="_blank" rel="noopener noreferrer">
-                    <img src="http://premiumhustlers.com/wp-content/uploads/2025/08/ideogram-generate-art-for-free.avif" alt="Ideogram - Generate Art for Free" style="width:100%; height:auto; max-width:728px; display:block; margin: 0 auto;">
-                </a>
-            </div>
-        </main>
+        <!-- Main Content Area -->
+        <div class="main-wrapper">
+            <div class="container">
+                <!-- Header -->
+                <header class="header">
+                    <div class="header-content">
+                        <h1 class="logo">
+                            <i class="fas fa-magic"></i>
+                            Nistha Free AI Image Generator
+                        </h1>
+                        <p class="dedication">In the loving memory of my late Daughter <span class="princess-name">👸 Nistha 👸</span></p>
+                        <p class="tagline">Create stunning images from text - 100% free, unlimited</p>
+                    </div>
+                </header>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-content">
-                <p>Powered by advanced AI technology • 100% Free • No limits</p>
-                <div class="footer-links">
-                    <a href="privacy-policy.html" class="footer-link">Privacy Policy</a>
-                    <a href="terms-of-service.html" class="footer-link">Terms of Service</a>
-                    <a href="about-us.html" class="footer-link">About Us</a>
+                <!-- Top Banner Ad -->
+                <div class="ad-container top-banner">
+                    <a rel="sponsored noopener noreferrer" href="https://1.envato.market/c/1290050/847709/4662" target="_blank" id="847709">
+                        <img src="//a.impactradius-go.com/display-ad/4662-847709" border="0" alt="Envato Elements" width="950" height="90"/>
+                    </a>
+                    <img height="0" width="0" src="https://1.envato.market/i/1290050/847709/4662" style="position:absolute;visibility:hidden;" border="0" />
                 </div>
-                <p class="disclaimer">
-                    <i class="fas fa-info-circle"></i>
-                    **Affiliate Disclaimer:** This site contains affiliate links. We may earn a commission if you make a purchase through these links, at no extra cost to you. This helps support our free service.
-                </p>
-                <p class="disclaimer watermark-info">
-                    <i class="fas fa-tint"></i>
-                    Images generated by this tool may contain a watermark from the AI service provider. To remove watermarks, you can use a free online AI watermark remover like 
-                    <a href="https://www.watermarkremover.io/" target="_blank" rel="noopener noreferrer">WatermarkRemover.io</a>.
-                </p>
+
+                <!-- Main Content -->
+                <main class="main-content">
+                    <!-- Input Section -->
+                    <section class="input-section">
+                        <div class="input-container">
+                            <label for="prompt-input" class="input-label">
+                                <i class="fas fa-lightbulb"></i>
+                                Describe your image
+                            </label>
+                            <textarea 
+                                id="prompt-input" 
+                                class="prompt-input" 
+                                placeholder="A majestic mountain landscape at sunset with golden light reflecting on a crystal clear lake..."
+                                rows="4"
+                            ></textarea>
+                            
+                            <!-- Options Panel -->
+                            <div class="options-panel">
+                                <div class="option-group">
+                                    <label class="option-label">Aspect Ratio</label>
+                                    <div class="aspect-ratio-selector">
+                                        <button class="aspect-btn active" data-ratio="1:1">
+                                            <div class="aspect-preview square"></div>
+                                            <span>1:1</span>
+                                        </button>
+                                        <button class="aspect-btn" data-ratio="16:9">
+                                            <div class="aspect-preview landscape"></div>
+                                            <span>16:9</span>
+                                        </button>
+                                        <button class="aspect-btn" data-ratio="9:16">
+                                            <div class="aspect-preview portrait"></div>
+                                            <span>9:16</span>
+                                        </button>
+                                        <button class="aspect-btn" data-ratio="4:3">
+                                            <div class="aspect-preview wide"></div>
+                                            <span>4:3</span>
+                                        </button>
+                                        <button class="aspect-btn" data-ratio="21:9">
+                                            <div class="aspect-preview ultrawide"></div>
+                                            <span>21:9</span>
+                                        </button>
+                                        <button class="aspect-btn" data-ratio="3:2">
+                                            <div class="aspect-preview classic"></div>
+                                            <span>3:2</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="option-group">
+                                    <label class="option-label">Style</label>
+                                    <select id="style-selector" class="style-selector">
+                                        <option value="photorealistic">Photorealistic</option>
+                                        <option value="artistic">Artistic</option>
+                                        <option value="abstract">Abstract</option>
+                                        <option value="fantasy">Fantasy</option>
+                                        <option value="minimalist">Minimalist</option>
+                                        <option value="vintage">Vintage</option>
+                                        <option value="watercolor">Watercolor</option>
+                                        <option value="oil painting">Oil Painting</option>
+                                        <option value="anime">Anime</option>
+                                        <option value="cyberpunk">Cyberpunk</option>
+                                        <option value="cartoon">Cartoon</option>
+                                        <option value="sci-fi">Sci-Fi</option>
+                                    </select>
+                                </div>
+
+                                <div class="option-group">
+                                    <label class="option-label">Model</label>
+                                    <select id="model-selector" class="style-selector">
+                                        <!-- Models will be dynamically loaded here -->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Generate Button -->
+                            <button id="generate-btn" class="generate-btn">
+                                <i class="fas fa-magic"></i>
+                                <span class="btn-text">Generate Image</span>
+                                <div class="btn-loader hidden">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <span id="loading-message">Generating...</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <!-- Example Prompts -->
+                        <div class="example-prompts">
+                            <h3>Need inspiration? Try these prompts:</h3>
+                            <div class="prompt-examples">
+                                <button class="example-btn" data-prompt="A futuristic city skyline at night with neon lights and flying cars">
+                                    Futuristic cityscape
+                                </button>
+                                <button class="example-btn" data-prompt="A cozy cabin in a snowy forest with warm light glowing from the windows">
+                                    Cozy winter cabin
+                                </button>
+                                <button class="example-btn" data-prompt="A majestic dragon soaring through clouds above ancient mountains">
+                                    Majestic dragon
+                                </button>
+                                <button class="example-btn" data-prompt="A peaceful zen garden with cherry blossoms and a small pond">
+                                    Zen garden
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Results Section -->
+                    <section class="results-section">
+                        <div class="results-container">
+                            <!-- Placeholder -->
+                            <div id="placeholder" class="placeholder">
+                                <div class="placeholder-content">
+                                    <i class="fas fa-image"></i>
+                                    <h3>Your AI-generated image will appear here</h3>
+                                    <p>Enter a description above and click "Generate Image" to get started</p>
+                                </div>
+                            </div>
+
+                            <!-- Loading State -->
+                            <div id="loading-state" class="loading-state hidden">
+                                <div class="loading-animation">
+                                    <div class="loading-spinner"></div>
+                                    <h3>Creating your image...</h3>
+                                    <p>This may take a few seconds</p>
+                                    <div class="loading-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Generated Image -->
+                            <div id="image-result" class="image-result hidden">
+                                <div class="image-container">
+                                    <img id="generated-image" src="" alt="Generated AI image" class="generated-image">
+                                    <div class="image-overlay">
+                                        <div class="image-actions">
+                                            <button id="download-btn" class="action-btn download-btn">
+                                                <i class="fas fa-download"></i>
+                                                Download
+                                            </button>
+                                            <button id="share-btn" class="action-btn share-btn">
+                                                <i class="fas fa-share"></i>
+                                                Share
+                                            </button>
+                                            <button id="regenerate-btn" class="action-btn regenerate-btn">
+                                                <i class="fas fa-redo"></i>
+                                                Regenerate
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="image-info">
+                                    <p class="prompt-used">Prompt: <span id="used-prompt"></span></p>
+                                </div>
+                            </div>
+
+                            <!-- Error State -->
+                            <div id="error-state" class="error-state hidden">
+                                <div class="error-content">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <h3>Oops! Something went wrong</h3>
+                                    <p id="error-message">Unable to generate image. Please try again.</p>
+                                    <button id="retry-btn" class="retry-btn">
+                                        <i class="fas fa-redo"></i>
+                                        Try Again
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+
+                <!-- Ideogram Ad -->
+                <div class="ad-container ideogram-ad">
+                    <a href="https://premiumhustlers.com/ideogithub" target="_blank" rel="noopener noreferrer">
+                        <img src="http://premiumhustlers.com/wp-content/uploads/2025/08/ideogram-generate-art-for-free.avif" alt="Ideogram - Generate Art for Free" style="width:100%; height:auto; max-width:728px; display:block; margin: 0 auto;">
+                    </a>
+                </div>
+
+                <!-- Footer -->
+                <footer class="footer">
+                    <div class="footer-content">
+                        <p>Powered by advanced AI technology • 100% Free • No limits</p>
+                        <div class="footer-links">
+                            <a href="privacy-policy.html" class="footer-link">Privacy Policy</a>
+                            <a href="terms-of-service.html" class="footer-link">Terms of Service</a>
+                            <a href="about-us.html" class="footer-link">About Us</a>
+                        </div>
+                        <p class="disclaimer">
+                            <i class="fas fa-info-circle"></i>
+                            **Affiliate Disclaimer:** This site contains affiliate links. We may earn a commission if you make a purchase through these links, at no extra cost to you. This helps support our free service.
+                        </p>
+                        <p class="disclaimer watermark-info">
+                            <i class="fas fa-tint"></i>
+                            Images generated by this tool may contain a watermark from the AI service provider. To remove watermarks, you can use a free online AI watermark remover like 
+                            <a href="https://www.watermarkremover.io/" target="_blank" rel="noopener noreferrer">WatermarkRemover.io</a>.
+                        </p>
+                    </div>
+                </footer>
             </div>
-        </footer>
+        </div>
     </div>
 
     <!-- Scripts -->
     <script src="script.js"></script>
 </body>
 </html>
+
