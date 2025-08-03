@@ -404,4 +404,378 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+// Donate Section Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const paypalBtn = document.getElementById('paypal-donate-btn');
+    const upiBtn = document.getElementById('upi-donate-btn');
+    const paypalSection = document.getElementById('paypal-payment-section');
+    const upiSection = document.getElementById('upi-payment-section');
+    const closeUpiBtn = document.getElementById('close-upi');
+
+    // PayPal button click handler
+    paypalBtn.addEventListener('click', function() {
+        // Hide UPI section
+        upiSection.classList.add('hidden');
+        
+        // Toggle PayPal section
+        if (paypalSection.classList.contains('hidden')) {
+            paypalSection.classList.remove('hidden');
+            
+            // Initialize PayPal button if not already done
+            if (!paypalSection.hasAttribute('data-initialized')) {
+                paypal.HostedButtons({
+                    hostedButtonId: "4H4D4EEJZQW8N",
+                }).render("#paypal-container-4H4D4EEJZQW8N");
+                paypalSection.setAttribute('data-initialized', 'true');
+            }
+        } else {
+            paypalSection.classList.add('hidden');
+        }
+    });
+
+    // UPI button click handler
+    upiBtn.addEventListener('click', function() {
+        // Hide PayPal section
+        paypalSection.classList.add('hidden');
+        
+        // Toggle UPI section
+        if (upiSection.classList.contains('hidden')) {
+            upiSection.classList.remove('hidden');
+        } else {
+            upiSection.classList.add('hidden');
+        }
+    });
+
+    // Close UPI section
+    closeUpiBtn.addEventListener('click', function() {
+        upiSection.classList.add('hidden');
+    });
+
+    // Close sections when clicking outside
+    document.addEventListener('click', function(event) {
+        const donateSection = document.querySelector('.donate-section');
+        if (!donateSection.contains(event.target)) {
+            paypalSection.classList.add('hidden');
+            upiSection.classList.add('hidden');
+        }
+    });
+});
+
+
+    // Gallery functionality
+    initializeGallery() {
+        this.galleryGrid = document.getElementById('gallery-grid');
+        this.galleryPlaceholder = document.querySelector('.gallery-placeholder');
+        this.galleryCount = document.getElementById('gallery-count');
+        this.clearGalleryBtn = document.getElementById('clear-gallery-btn');
+        
+        // Load existing gallery from localStorage
+        this.loadGallery();
+        
+        // Bind gallery events
+        this.clearGalleryBtn.addEventListener('click', () => this.clearGallery());
+        
+        // Create modal for gallery images
+        this.createGalleryModal();
+    }
+
+    createGalleryModal() {
+        // Create modal HTML
+        const modalHTML = `
+            <div id="gallery-modal" class="gallery-modal">
+                <div class="gallery-modal-content">
+                    <button class="gallery-modal-close" id="gallery-modal-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <img id="gallery-modal-image" class="gallery-modal-image" src="" alt="Gallery Image">
+                    <div class="gallery-modal-info">
+                        <p id="gallery-modal-prompt" class="gallery-modal-prompt"></p>
+                        <div class="gallery-modal-meta">
+                            <span id="gallery-modal-date" class="gallery-modal-date"></span>
+                            <div class="gallery-modal-actions">
+                                <button id="gallery-modal-use-prompt" class="action-btn use-prompt-btn">
+                                    <i class="fas fa-copy"></i>
+                                    Use Prompt
+                                </button>
+                                <button id="gallery-modal-download" class="action-btn download-btn">
+                                    <i class="fas fa-download"></i>
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Bind modal events
+        this.galleryModal = document.getElementById('gallery-modal');
+        this.galleryModalClose = document.getElementById('gallery-modal-close');
+        this.galleryModalImage = document.getElementById('gallery-modal-image');
+        this.galleryModalPrompt = document.getElementById('gallery-modal-prompt');
+        this.galleryModalDate = document.getElementById('gallery-modal-date');
+        this.galleryModalDownload = document.getElementById('gallery-modal-download');
+        this.galleryModalUsePrompt = document.getElementById('gallery-modal-use-prompt');
+        
+        this.galleryModalClose.addEventListener('click', () => this.closeGalleryModal());
+        this.galleryModal.addEventListener('click', (e) => {
+            if (e.target === this.galleryModal) {
+                this.closeGalleryModal();
+            }
+        });
+        
+        // ESC key to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.galleryModal.classList.contains('active')) {
+                this.closeGalleryModal();
+            }
+        });
+    }
+
+    addToGallery(imageUrl, prompt, aspectRatio, style) {
+        const galleryItem = {
+            id: Date.now().toString(),
+            imageUrl: imageUrl,
+            prompt: prompt,
+            aspectRatio: aspectRatio,
+            style: style,
+            timestamp: new Date().toISOString(),
+            date: new Date().toLocaleDateString()
+        };
+        
+        // Get existing gallery from localStorage
+        let gallery = JSON.parse(localStorage.getItem('aiImageGallery') || '[]');
+        
+        // Add new item to the beginning of the array
+        gallery.unshift(galleryItem);
+        
+        // Limit gallery to 50 items to prevent storage issues
+        if (gallery.length > 50) {
+            gallery = gallery.slice(0, 50);
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('aiImageGallery', JSON.stringify(gallery));
+        
+        // Update gallery display
+        this.loadGallery();
+    }
+
+    loadGallery() {
+        const gallery = JSON.parse(localStorage.getItem('aiImageGallery') || '[]');
+        
+        // Update gallery count
+        this.galleryCount.textContent = gallery.length;
+        
+        // Clear existing gallery items (except placeholder)
+        const existingItems = this.galleryGrid.querySelectorAll('.gallery-item');
+        existingItems.forEach(item => item.remove());
+        
+        if (gallery.length === 0) {
+            this.galleryPlaceholder.classList.remove('hidden');
+            return;
+        }
+        
+        this.galleryPlaceholder.classList.add('hidden');
+        
+        // Create gallery items
+        gallery.forEach(item => {
+            this.createGalleryItem(item);
+        });
+    }
+
+    createGalleryItem(item) {
+        const galleryItem = document.createElement('div');
+        galleryItem.className = 'gallery-item';
+        galleryItem.dataset.id = item.id;
+        
+        galleryItem.innerHTML = `
+            <img src="${item.imageUrl}" alt="Generated Image" class="gallery-image" loading="lazy">
+            <div class="gallery-item-info">
+                <p class="gallery-item-prompt">${item.prompt}</p>
+                <div class="gallery-item-meta">
+                    <span class="gallery-item-date">${item.date}</span>
+                    <div class="gallery-item-actions">
+                        <button class="gallery-action-btn gallery-use-prompt-btn" data-prompt="${item.prompt}" title="Use this prompt">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button class="gallery-action-btn gallery-download-btn" data-url="${item.imageUrl}" data-prompt="${item.prompt}" title="Download image">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="gallery-action-btn gallery-delete-btn" data-id="${item.id}" title="Delete image">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add click event to open modal
+        const galleryImage = galleryItem.querySelector('.gallery-image');
+        galleryImage.addEventListener('click', () => {
+            this.openGalleryModal(item);
+        });
+        
+        // Add use prompt event
+        const usePromptBtn = galleryItem.querySelector('.gallery-use-prompt-btn');
+        usePromptBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.useGalleryPrompt(item.prompt);
+        });
+        
+        // Add download event
+        const downloadBtn = galleryItem.querySelector('.gallery-download-btn');
+        downloadBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.downloadGalleryImage(item.imageUrl, item.prompt);
+        });
+        
+        // Add delete event
+        const deleteBtn = galleryItem.querySelector('.gallery-delete-btn');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.deleteGalleryItem(item.id);
+        });
+        
+        this.galleryGrid.appendChild(galleryItem);
+    }
+
+    openGalleryModal(item) {
+        this.galleryModalImage.src = item.imageUrl;
+        this.galleryModalPrompt.textContent = item.prompt;
+        this.galleryModalDate.textContent = `Created on ${item.date}`;
+        
+        // Update download button
+        this.galleryModalDownload.onclick = () => {
+            this.downloadGalleryImage(item.imageUrl, item.prompt);
+        };
+        
+        // Update use prompt button (if it exists)
+        const usePromptBtn = document.getElementById('gallery-modal-use-prompt');
+        if (usePromptBtn) {
+            usePromptBtn.onclick = () => {
+                this.useGalleryPrompt(item.prompt);
+                this.closeGalleryModal();
+            };
+        }
+        
+        this.galleryModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    useGalleryPrompt(prompt) {
+        // Set the prompt in the input field
+        this.promptInput.value = prompt;
+        
+        // Scroll to the top of the page to show the input
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+        
+        // Focus on the prompt input
+        setTimeout(() => {
+            this.promptInput.focus();
+            this.promptInput.setSelectionRange(prompt.length, prompt.length);
+        }, 500);
+        
+        // Show a brief notification
+        this.showNotification('Prompt copied to input field!');
+    }
+
+    showNotification(message) {
+        // Create notification element if it doesn't exist
+        let notification = document.getElementById('prompt-notification');
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.id = 'prompt-notification';
+            notification.className = 'prompt-notification';
+            document.body.appendChild(notification);
+        }
+        
+        notification.textContent = message;
+        notification.classList.add('show');
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
+
+    closeGalleryModal() {
+        this.galleryModal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    downloadGalleryImage(imageUrl, prompt) {
+        const link = document.createElement('a');
+        link.href = imageUrl;
+        link.download = `nistha-art-${prompt.substring(0, 30).replace(/[^a-zA-Z0-9]/g, '-')}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    deleteGalleryItem(itemId) {
+        if (confirm('Are you sure you want to delete this image from the gallery?')) {
+            let gallery = JSON.parse(localStorage.getItem('aiImageGallery') || '[]');
+            gallery = gallery.filter(item => item.id !== itemId);
+            localStorage.setItem('aiImageGallery', JSON.stringify(gallery));
+            this.loadGallery();
+        }
+    }
+
+    clearGallery() {
+        if (confirm('Are you sure you want to clear the entire gallery? This action cannot be undone.')) {
+            localStorage.removeItem('aiImageGallery');
+            this.loadGallery();
+        }
+    }
+
+    // Update the existing generateImage method to add images to gallery
+    async generateImage() {
+        if (this.isGenerating) return;
+        
+        const prompt = this.promptInput.value.trim();
+        if (!prompt) {
+            this.showError('Please enter a description for your image.');
+            return;
+        }
+
+        this.isGenerating = true;
+        this.showLoading(prompt);
+
+        try {
+            // Use Pollinations.AI API
+            const imageUrl = await this.callPollinationsAPI(prompt);
+            
+            if (imageUrl) {
+                this.showSuccess(imageUrl, prompt);
+                // Add to gallery
+                this.addToGallery(imageUrl, prompt, this.currentAspectRatio, this.currentStyle);
+            } else {
+                throw new Error('Failed to generate image');
+            }
+        } catch (error) {
+            console.error('Generation error:', error);
+            this.showError('Failed to generate image. Please try again.');
+        } finally {
+            this.isGenerating = false;
+        }
+    }
+
+// Initialize gallery when the class is constructed
+constructor() {
+    this.currentAspectRatio = '1:1';
+    this.currentStyle = 'photorealistic';
+    this.currentModel = 'default';
+    this.isGenerating = false;
+    
+    this.initializeElements();
+    this.bindEvents();
+    this.setupExamplePrompts();
+    this.initializeGallery(); // Add this line
+}
 
